@@ -23,6 +23,7 @@ contract NFTMarketplace is ERC721URIStorage {
       address payable owner;
       uint256 price;
       bool sold;
+      bool listed; //added for future features
     }
 
     event MarketItemCreated (
@@ -30,7 +31,8 @@ contract NFTMarketplace is ERC721URIStorage {
       address seller,
       address owner,
       uint256 price,
-      bool sold
+      bool sold,
+      bool listed //added for future features
     );
 
     constructor() ERC721("Metaverse Tokens", "METT") {
@@ -71,7 +73,8 @@ contract NFTMarketplace is ERC721URIStorage {
         payable(msg.sender),
         payable(address(this)),
         price,
-        false
+        false,
+        false //added for future features
       );
 
       _transfer(msg.sender, address(this), tokenId);
@@ -80,7 +83,8 @@ contract NFTMarketplace is ERC721URIStorage {
         msg.sender,
         address(this),
         price,
-        false
+        false,
+        false //added for future features
       );
     }
 
@@ -89,6 +93,7 @@ contract NFTMarketplace is ERC721URIStorage {
       require(idToMarketItem[tokenId].owner == msg.sender, "Only item owner can perform this operation");
       require(msg.value == listingPrice, "Price must be equal to listing price");
       idToMarketItem[tokenId].sold = false;
+      idToMarketItem[tokenId].listed = false; //added for future features
       idToMarketItem[tokenId].price = price;
       idToMarketItem[tokenId].seller = payable(msg.sender);
       idToMarketItem[tokenId].owner = payable(address(this));
@@ -107,6 +112,7 @@ contract NFTMarketplace is ERC721URIStorage {
       require(msg.value == price, "Please submit the asking price in order to complete the purchase");
       idToMarketItem[tokenId].owner = payable(msg.sender);
       idToMarketItem[tokenId].sold = true;
+      idToMarketItem[tokenId].listed = true; //added for future features
       idToMarketItem[tokenId].seller = payable(address(0));
       _itemsSold.increment();
       _transfer(address(this), msg.sender, tokenId);
